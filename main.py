@@ -4,7 +4,7 @@ entries = []
 
 
 def line():
-    print("=" * 55) 
+    print("=" * 55)
 
 
 def pause():
@@ -15,12 +15,9 @@ def get_number(prompt, minimum, maximum):
     while True:
         try:
             value = float(input(prompt))
-
             if minimum <= value <= maximum:
                 return value
-
             print("Enter a value between", minimum, "and", maximum)
-
         except ValueError:
             print("Please enter a valid number.")
 
@@ -29,14 +26,11 @@ def get_integer(prompt, minimum, maximum):
     while True:
         try:
             value = int(input(prompt))
-
             if minimum <= value <= maximum:
                 return value
-
             print("Enter a whole number between", minimum, "and", maximum)
-
         except ValueError:
-            print("Please enter a valid whole number.")
+            print("Please enter a whole number.")
 
 
 def add_entry():
@@ -45,50 +39,38 @@ def add_entry():
     line()
 
     name = input("Student name: ").strip()
-
     if name == "":
         print("Please enter your name.")
         pause()
         return
 
     subject = input("Subject studied: ").strip()
-
     if subject == "":
-        print("Please enter the subject you studied.")
+        print("Please enter the subject.")
         pause()
         return
 
     study_hours = get_number(
-        "How many hours did you study today? (0-24): ",
-        0,
-        24
+        "How many hours did you study today? (0-24): ", 0, 24
     )
 
     assignments = get_integer(
-        "How many assignments do you have? ",
-        0,
-        50
+        "How many assignments do you have? (0-50): ", 0, 50
     )
 
     workload = get_number(
-        "How would you rate your workload? (1-10): ",
-        1,
-        10
+        "How would you rate your workload? (1-10): ", 1, 10
     )
 
     confidence = get_number(
-        "How confident do you feel about your exams? (1-10): ",
-        1,
-        10
+        "How confident do you feel about your exams? (1-10): ", 1, 10
     )
 
     sleep_hours = get_number(
-        "How many hours did you sleep last night? (0-24): ",
-        0,
-        24
+        "How many hours did you sleep last night? (0-24): ", 0, 24
     )
 
-    new_entry = {
+    entry = {
         "date": datetime.now().strftime("%d-%m-%Y"),
         "name": name,
         "subject": subject,
@@ -99,20 +81,21 @@ def add_entry():
         "sleep_hours": sleep_hours
     }
 
-    entries.append(new_entry)
+    entries.append(entry)
 
-    print("\nYour entry has been added.")
-    print("Student:", name)
-    print("Subject:", subject)
+    print("\nEntry saved.")
+    print("Student :", name)
+    print("Subject :", subject)
+    print("Keep going. Small progress adds up.")
 
     pause()
 
+
 def average(key):
-    if len(entries) == 0:
+    if not entries:
         return 0
 
     total = 0
-
     for entry in entries:
         total += entry[key]
 
@@ -120,19 +103,15 @@ def average(key):
 
 
 def most_studied_subject():
-    if len(entries) == 0:
+    if not entries:
         return "No data"
 
     subject_hours = {}
 
     for entry in entries:
         subject = entry["subject"]
-        hours = entry["study_hours"]
-
-        if subject in subject_hours:
-            subject_hours[subject] += hours
-        else:
-            subject_hours[subject] = hours
+        subject_hours[subject] = subject_hours.get(subject, 0)
+        subject_hours[subject] += entry["study_hours"]
 
     highest_subject = ""
     highest_hours = -1
@@ -146,7 +125,7 @@ def most_studied_subject():
 
 
 def get_pulse_status():
-    if len(entries) == 0:
+    if not entries:
         return "No data available"
 
     study = average("study_hours")
@@ -180,8 +159,7 @@ def get_pulse_status():
         return "GOOD"
     elif score >= 6:
         return "MODERATE"
-    else:
-        return "NEEDS ATTENTION"
+    return "NEEDS ATTENTION"
 
 
 def dashboard():
@@ -189,9 +167,8 @@ def dashboard():
     print("CAMPUS PULSE - DASHBOARD")
     line()
 
-    if len(entries) == 0:
-        print("No entries available.")
-        print("Add a daily entry first.")
+    if not entries:
+        print("No entries yet. Add a daily entry first.")
         pause()
         return
 
@@ -211,7 +188,6 @@ def dashboard():
     print("Campus Pulse       :", get_pulse_status())
 
     print("\nStudy Level")
-
     if study >= 5:
         print("[##########] Excellent")
     elif study >= 3:
@@ -220,7 +196,6 @@ def dashboard():
         print("[###-------] Low")
 
     print("\nConfidence Level")
-
     if confidence >= 7:
         print("[##########] High")
     elif confidence >= 4:
@@ -229,7 +204,6 @@ def dashboard():
         print("[###-------] Low")
 
     print("\nWorkload Level")
-
     if workload <= 4:
         print("[###-------] Low")
     elif workload <= 7:
@@ -245,13 +219,13 @@ def view_history():
     print("STUDY HISTORY")
     line()
 
-    if len(entries) == 0:
+    if not entries:
         print("No study history available.")
         pause()
         return
 
-    for i, entry in enumerate(entries, start=1):
-        print("\nEntry", i)
+    for number, entry in enumerate(entries, start=1):
+        print("\nEntry", number)
         print("-" * 40)
         print("Date        :", entry["date"])
         print("Student     :", entry["name"])
@@ -270,9 +244,8 @@ def todays_priority():
     print("TODAY'S PRIORITY")
     line()
 
-    if len(entries) == 0:
-        print("No data available.")
-        print("Add a daily entry first.")
+    if not entries:
+        print("No data available. Add a daily entry first.")
         pause()
         return
 
@@ -284,22 +257,22 @@ def todays_priority():
     priorities = []
 
     if confidence < 5:
-        priorities.append("Spend some time preparing for exams and revising difficult topics.")
+        priorities.append("Spend some time revising your difficult topics.")
 
     if study < 3:
-        priorities.append("Try to increase your focused study time.")
+        priorities.append("Try to get a little more focused study time today.")
 
     if workload >= 8:
-        priorities.append("Finish the most important assignments first.")
+        priorities.append("Start with the most important assignment first.")
 
     if sleep < 6:
-        priorities.append("Try to follow a better sleep schedule.")
+        priorities.append("Try to get some proper rest before the next study session.")
 
-    if len(priorities) == 0:
-        priorities.append("Keep following your current routine and revise regularly.")
+    if not priorities:
+        priorities.append("Your routine looks balanced. Keep the same consistency.")
 
-    for i, priority in enumerate(priorities, start=1):
-        print(str(i) + ".", priority)
+    for number, priority in enumerate(priorities, start=1):
+        print(str(number) + ".", priority)
 
     print("\nRecommended focus:")
 
@@ -320,7 +293,7 @@ def subject_analysis():
     print("SUBJECT ANALYSIS")
     line()
 
-    if len(entries) == 0:
+    if not entries:
         print("No data available.")
         pause()
         return
@@ -331,10 +304,7 @@ def subject_analysis():
         subject = entry["subject"]
 
         if subject not in subjects:
-            subjects[subject] = {
-                "hours": 0,
-                "count": 0
-            }
+            subjects[subject] = {"hours": 0, "count": 0}
 
         subjects[subject]["hours"] += entry["study_hours"]
         subjects[subject]["count"] += 1
@@ -355,7 +325,7 @@ def delete_last_entry():
     print("DELETE LAST ENTRY")
     line()
 
-    if len(entries) == 0:
+    if not entries:
         print("There is nothing to delete yet.")
         pause()
         return
@@ -366,7 +336,7 @@ def delete_last_entry():
     print("Subject :", last["subject"])
     print("Date    :", last["date"])
 
-    choice = input("\nDelete this entry? (y/n): ").lower()
+    choice = input("\nDelete this entry? (y/n): ").strip().lower()
 
     if choice == "y":
         entries.pop()
@@ -377,35 +347,58 @@ def delete_last_entry():
     pause()
 
 
-def about_project():
+def quick_study_checkin():
     line()
-    print("ABOUT CAMPUS PULSE")
+    print("QUICK STUDY CHECK-IN")
     line()
 
-    print("""
-Campus Pulse is a simple Python program for keeping track
-of daily student activities and study habits.
+    if not entries:
+        print("Add at least one daily entry before using this option.")
+        pause()
+        return
 
-It records:
-- Study hours
-- Assignments
-- Workload
-- Exam confidence
-- Sleep hours
-- Subjects studied
+    study = average("study_hours")
+    workload = average("workload")
+    confidence = average("confidence")
+    sleep = average("sleep_hours")
 
-The program uses this information to show a basic summary
-and suggest what the student can focus on.
+    print("Here is a quick look at how things are going.\n")
 
-Python concepts used:
-- Lists
-- Dictionaries
-- Functions
-- Loops
-- If-else statements
-- Basic calculations
-- Date and time
-""")
+    if study >= 5:
+        print("Study: You are putting in a solid amount of time.")
+    elif study >= 3:
+        print("Study: You are getting some work done. A little more consistency could help.")
+    else:
+        print("Study: Your study time is quite low. Even one focused session can help.")
+
+    if confidence >= 7:
+        print("Confidence: You seem comfortable with your preparation.")
+    elif confidence >= 4:
+        print("Confidence: You are in the middle. More practice may make you feel more ready.")
+    else:
+        print("Confidence: You may need some extra revision before the exams.")
+
+    if workload >= 8:
+        print("Workload: You have a lot on your plate. Take one task at a time.")
+    elif workload >= 5:
+        print("Workload: Your workload is manageable, but keep an eye on deadlines.")
+    else:
+        print("Workload: Things look fairly comfortable right now.")
+
+    if sleep < 6:
+        print("Sleep: Try not to ignore rest. It can make studying harder when you are tired.")
+    else:
+        print("Sleep: Your average sleep is looking okay.")
+
+    print("\nOne simple suggestion:")
+    if confidence < 5:
+        print("Pick one weak topic and revise it today.")
+    elif workload >= 8:
+        print("Finish your most urgent task before starting something new.")
+    elif study < 3:
+        print("Set aside one distraction-free study session today.")
+    else:
+        print("Keep the routine steady and focus on regular revision.")
 
     pause()
 
@@ -423,12 +416,12 @@ def main():
         print("4. Today's Priority")
         print("5. Subject Analysis")
         print("6. Delete Last Entry")
-        print("7. About Project")
+        print("7. Quick Study Check-in")
         print("8. Exit")
 
         line()
 
-        choice = input("Enter your choice: ")
+        choice = input("Enter your choice: ").strip()
 
         if choice == "1":
             add_entry()
@@ -443,13 +436,13 @@ def main():
         elif choice == "6":
             delete_last_entry()
         elif choice == "7":
-            about_project()
+            quick_study_checkin()
         elif choice == "8":
-            print("\nThank you for using Campus Pulse!")
-            print("Have a productive day!")
+            print("\nThanks for using Campus Pulse!")
+            print("Keep studying at your own pace. Good luck!")
             break
         else:
-            print("\nInvalid choice. Please select 1-8.")
+            print("\nPlease enter a number from 1 to 8.")
             pause()
 
 
